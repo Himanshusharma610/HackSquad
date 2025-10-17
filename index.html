@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portal Login</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      background-color: #e0e5ec;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: #333;
+    }
+
+    .page-container {
+      display: flex;
+      width: 85vw;
+      max-width: 1300px;
+      min-height: 80vh;
+      background-color: #fff;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+      border-radius: 25px;
+      overflow: hidden;
+    }
+
+    .login-section {
+      background-color: #2b2b3f;
+      color: #fff;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 50px;
+      position: relative;
+    }
+
+    .form-wrapper {
+      width: 100%;
+      max-width: 380px;
+      overflow: hidden;
+      position: relative;
+      height: 480px;
+    }
+
+    .login-form {
+      position: absolute;
+      width: 100%;
+      top: 0;
+      left: 0;
+      transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+      opacity: 1;
+      transform: translateX(0%);
+    }
+
+    .login-form.hidden {
+      transform: translateX(100%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* ✅ FIXED: Teacher form visible when active */
+    .login-form.teacher-active {
+      transform: translateX(0%);
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .form-wrapper h1 {
+      font-size: 2.8rem;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .form-wrapper > p {
+      color: #a0a0b3;
+      margin-bottom: 40px;
+    }
+
+    .login-type-switch {
+      display: flex;
+      background-color: #35354e;
+      border-radius: 10px;
+      padding: 5px;
+      margin-bottom: 30px;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .login-type-switch button {
+      flex: 1;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      background-color: transparent;
+      color: #a0a0b3;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .login-type-switch button.active {
+      background-color: #7f5af0;
+      color: #fff;
+      box-shadow: 0 4px 10px rgba(127, 90, 240, 0.4);
+    }
+
+    .input-group {
+      margin-bottom: 25px;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 0.9rem;
+      color: #a0a0b3;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 14px 18px;
+      border: 1px solid #4a4a68;
+      background-color: #35354e;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 1rem;
+      font-family: "Poppins", sans-serif;
+    }
+
+    .input-group input:focus {
+      outline: none;
+      border-color: #7f5af0;
+    }
+
+    .password-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .password-wrapper input {
+      padding-right: 45px;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 18px;
+      cursor: pointer;
+      color: #a0a0b3;
+    }
+
+    .forgot-password {
+      display: block;
+      text-align: right;
+      color: #a0a0b3;
+      text-decoration: none;
+      font-size: 0.9rem;
+      margin-top: -15px;
+      margin-bottom: 30px;
+      transition: color 0.3s;
+    }
+
+    .forgot-password:hover {
+      color: #fff;
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(90deg, #9d50bb, #6e48aa);
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .login-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(138, 43, 226, 0.4);
+    }
+
+    .signup-section {
+      margin-top: 50px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 20px;
+      border-top: 1px solid #4a4a68;
+    }
+
+    .signup-section p {
+      color: #a0a0b3;
+    }
+
+    .signup-btn {
+      padding: 10px 25px;
+      border: 1px solid #4a4a68;
+      border-radius: 8px;
+      text-decoration: none;
+      color: #fff;
+      font-weight: 500;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .signup-btn:hover {
+      background-color: #fff;
+      color: #2b2b3f;
+    }
+
+    .welcome-section {
+      background-color: #f4f7fc;
+      flex: 1.2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .welcome-content {
+      background-color: #7f5af0;
+      color: #fff;
+      padding: 50px;
+      border-radius: 20px;
+      text-align: center;
+      width: 90%;
+      height: 90%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    .welcome-content h2 {
+      font-size: 2.2rem;
+      font-weight: 300;
+    }
+
+    .welcome-content h1 {
+      font-size: 3.8rem;
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 15px;
+      text-transform: capitalize;
+    }
+
+    .welcome-content p {
+      font-size: 1rem;
+      color: #dcdcf0;
+      max-width: 350px;
+    }
+
+    @media (max-width: 1200px) {
+      .page-container {
+        width: 95vw;
+        flex-direction: column;
+        height: auto;
+      }
+
+      .login-section,
+      .welcome-section {
+        flex: 1;
+        padding: 40px;
+      }
+
+      .welcome-content {
+        height: auto;
+        padding: 40px 30px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 20px 0;
+        height: auto;
+      }
+      .page-container {
+        width: 90vw;
+        min-height: auto;
+      }
+      .welcome-content h1 {
+        font-size: 2.5rem;
+      }
+
+      .welcome-content h2 {
+        font-size: 1.8rem;
+      }
+      .form-wrapper {
+        height: 450px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .form-wrapper h1 {
+        font-size: 2.2rem;
+      }
+
+      .signup-section {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+        border-top: none;
+        margin-top: 30px;
+      }
+      .login-section {
+        padding: 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-container">
+    <div class="login-section">
+      <div class="login-type-switch">
+        <button id="student-tab" class="active">Student</button>
+        <button id="teacher-tab">Teacher</button>
+      </div>
+
+      <div class="form-wrapper">
+        <div id="student-login-form" class="login-form">
+          <h1>Login</h1>
+          <p>Enter your student account details</p>
+          <form action="#">
+            <div class="input-group">
+              <label for="student-username">Student ID</label>
+              <input type="text" id="student-username" name="student-username" />
+            </div>
+            <div class="input-group">
+              <label for="student-password">Password</label>
+              <div class="password-wrapper">
+                <input
+                  type="password"
+                  id="student-password"
+                  name="student-password"
+                />
+                <i
+                  class="fa-regular fa-eye-slash toggle-password"
+                  data-target="student-password"
+                ></i>
+              </div>
+            </div>
+            <a href="#" class="forgot-password">Forgot Password?</a>
+            <button type="submit" class="login-btn">Login as Student</button>
+          </form>
+          <div class="signup-section">
+            <p>Don't have a student account?</p>
+            <a href="#" class="signup-btn">Sign up</a>
+          </div>
+        </div>
+
+        <div id="teacher-login-form" class="login-form hidden">
+          <h1>Login</h1>
+          <p>Enter your teacher account details</p>
+          <form action="#">
+            <div class="input-group">
+              <label for="teacher-username">Employee ID</label>
+              <input type="text" id="teacher-username" name="teacher-username" />
+            </div>
+            <div class="input-group">
+              <label for="teacher-password">Password</label>
+              <div class="password-wrapper">
+                <input
+                  type="password"
+                  id="teacher-password"
+                  name="teacher-password"
+                />
+                <i
+                  class="fa-regular fa-eye-slash toggle-password"
+                  data-target="teacher-password"
+                ></i>
+              </div>
+            </div>
+            <a href="#" class="forgot-password">Forgot Password?</a>
+            <button type="submit" class="login-btn">Login as Teacher</button>
+          </form>
+          <div class="signup-section">
+            <p>Don't have a teacher account?</p>
+            <a href="#" class="signup-btn">Contact Admin</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="welcome-section">
+      <div class="welcome-content">
+        <h2>Welcome to</h2>
+        <h1>student portal</h1>
+        <p>login to access your account</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const studentTab = document.getElementById("student-tab");
+      const teacherTab = document.getElementById("teacher-tab");
+      const studentLoginForm = document.getElementById("student-login-form");
+      const teacherLoginForm = document.getElementById("teacher-login-form");
+
+      function setupPasswordToggle(passwordInputId, toggleIcon) {
+        const passwordInput = document.getElementById(passwordInputId);
+        if (passwordInput && toggleIcon) {
+          toggleIcon.addEventListener("click", function () {
+            const type =
+              passwordInput.getAttribute("type") === "password"
+                ? "text"
+                : "password";
+            passwordInput.setAttribute("type", type);
+            this.classList.toggle("fa-eye");
+            this.classList.toggle("fa-eye-slash");
+          });
+        }
+      }
+
+      document.querySelectorAll(".toggle-password").forEach((toggleIcon) => {
+        const targetId = toggleIcon.getAttribute("data-target");
+        setupPasswordToggle(targetId, toggleIcon);
+      });
+
+      studentTab.addEventListener("click", () => {
+        studentTab.classList.add("active");
+        teacherTab.classList.remove("active");
+
+        teacherLoginForm.classList.add("hidden");
+        studentLoginForm.classList.remove("hidden");
+
+        document.querySelector(".welcome-content h1").textContent =
+          "student portal";
+        document.querySelector(".welcome-content p").textContent =
+          "login to access your account";
+      });
+
+      teacherTab.addEventListener("click", () => {
+        teacherTab.classList.add("active");
+        studentTab.classList.remove("active");
+
+        studentLoginForm.classList.add("hidden");
+        teacherLoginForm.classList.remove("hidden");
+        teacherLoginForm.classList.add("teacher-active");
+
+        document.querySelector(".welcome-content h1").textContent =
+          "teacher portal";
+        document.querySelector(".welcome-content p").textContent =
+          "login to access your courses & tools";
+      });
+    });
+  </script>
+</body>
+</html>
