@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portal Login - Biometric Demo</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+
+  <style>
+    /* (Same styling as before, kept concise) */
+    * { margin:0; padding:0; box-sizing:border-box;}
+    body{ font-family:"Poppins",sans-serif; background:#e0e5ec; display:flex; justify-content:center; align-items:center; min-height:100vh; color:#333;}
+    .page-container{ display:flex; width:85vw; max-width:1300px; min-height:80vh; background:#fff; box-shadow:0 15px 40px rgba(0,0,0,0.1); border-radius:25px; overflow:hidden;}
+    .login-section{ background:#2b2b3f; color:#fff; flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; padding:50px; position:relative;}
+    .form-wrapper{ width:100%; max-width:380px; overflow:hidden; position:relative; height:520px;}
+    .login-form{ position:absolute; width:100%; top:0; left:0; transition:transform .5s ease-in-out, opacity .5s; opacity:1; transform:translateX(0%);}
+    .login-form.hidden{ transform:translateX(100%); opacity:0; pointer-events:none;}
+    .login-form.teacher-active{ transform:translateX(0%); opacity:1; pointer-events:all;}
+    .form-wrapper h1{ font-size:2.2rem; margin-bottom:10px; font-weight:600;}
+    .form-wrapper p{ color:#a0a0b3; margin-bottom:20px;}
+    .login-type-switch{ display:flex; background:#35354e; border-radius:10px; padding:5px; margin-bottom:20px; width:100%; max-width:380px;}
+    .login-type-switch button{ flex:1; padding:12px 20px; border:none; border-radius:8px; background:transparent; color:#a0a0b3; font-size:1rem; cursor:pointer;}
+    .login-type-switch button.active{ background:#7f5af0; color:#fff;}
+    .input-group{ margin-bottom:18px;}
+    .input-group label{ display:block; font-size:.9rem; color:#a0a0b3; margin-bottom:8px; font-weight:500;}
+    .input-group input{ width:100%; padding:12px 16px; border:1px solid #4a4a68; background:#35354e; border-radius:8px; color:#fff;}
+    .password-wrapper{ position:relative; display:flex; align-items:center;}
+    .password-wrapper input{ padding-right:45px;}
+    .toggle-password{ position:absolute; right:18px; cursor:pointer; color:#a0a0b3;}
+    .forgot-password{ display:block; text-align:right; color:#a0a0b3; text-decoration:none; font-size:.9rem; margin-top:-12px; margin-bottom:18px;}
+    .login-btn{ width:100%; padding:12px; border:none; border-radius:8px; background:linear-gradient(90deg,#9d50bb,#6e48aa); color:#fff; font-size:1rem; font-weight:600; cursor:pointer;}
+    .biometric-row{ display:flex; gap:10px; margin-top:12px; }
+    .bio-btn{ flex:1; padding:10px; border-radius:8px; border:1px solid #4a4a68; background:transparent; color:#fff; cursor:pointer; font-weight:600;}
+    .small-note{ font-size:.85rem; color:#cfcfe6; margin-top:8px;}
+    .signup-section{ margin-top:22px; display:flex; justify-content:space-between; align-items:center; padding-top:14px; border-top:1px solid #4a4a68;}
+    .signup-section p{ color:#a0a0b3;}
+    .signup-btn{ padding:8px 18px; border:1px solid #4a4a68; border-radius:8px; text-decoration:none; color:#fff;}
+    .welcome-section{ background:#f4f7fc; flex:1.2; display:flex; justify-content:center; align-items:center; padding:20px;}
+    .welcome-content{ background:#7f5af0; color:#fff; padding:50px; border-radius:20px; text-align:center; width:90%; height:90%; display:flex; flex-direction:column; justify-content:center; align-items:center;}
+    .welcome-content h1{ font-size:3.2rem; font-weight:700; margin-bottom:10px; text-transform:capitalize;}
+    @media (max-width:1200px){ .page-container{ flex-direction:column; width:95vw; } .form-wrapper{ height:520px; } }
+    @media (max-width:480px){ .form-wrapper{ height:auto; } .welcome-content h1{ font-size:2.2rem;} }
+  </style>
+</head>
+<body>
+  <div class="page-container">
+    <div class="login-section">
+      <div class="login-type-switch">
+        <button id="student-tab" class="active">Student</button>
+        <button id="teacher-tab">Teacher</button>
+      </div>
+
+      <div class="form-wrapper">
+        <!-- STUDENT -->
+        <div id="student-login-form" class="login-form">
+          <h1>Student Login</h1>
+          <p>Enter your student account details</p>
+          <form id="student-form" onsubmit="return false;">
+            <div class="input-group">
+              <label for="student-username">Student ID</label>
+              <input type="text" id="student-username" name="student-username" />
+            </div>
+            <div class="input-group">
+              <label for="student-password">Password</label>
+              <div class="password-wrapper">
+                <input type="password" id="student-password" name="student-password" />
+                <i class="fa-regular fa-eye-slash toggle-password" data-target="student-password"></i>
+              </div>
+            </div>
+
+            <a href="#" class="forgot-password">Forgot Password?</a>
+
+            <button id="student-login-btn" class="login-btn">Login as Student</button>
+
+            <div class="biometric-row">
+              <button id="student-register-bio" class="bio-btn" type="button">Register Biometric</button>
+              <button id="student-use-bio" class="bio-btn" type="button">Use Biometric Login</button>
+            </div>
+
+        
+          </form>
+
+          <div class="signup-section">
+            <p>Don't have a student account?</p>
+            <a href="#" class="signup-btn">Sign up</a>
+          </div>
+        </div>
+
+        <!-- TEACHER -->
+        <div id="teacher-login-form" class="login-form hidden">
+          <h1>Teacher Login</h1>
+          <p>Enter your teacher account details</p>
+          <form id="teacher-form" onsubmit="return false;">
+            <div class="input-group">
+              <label for="teacher-username">Employee ID</label>
+              <input type="text" id="teacher-username" name="teacher-username" />
+            </div>
+            <div class="input-group">
+              <label for="teacher-password">Password</label>
+              <div class="password-wrapper">
+                <input type="password" id="teacher-password" name="teacher-password" />
+                <i class="fa-regular fa-eye-slash toggle-password" data-target="teacher-password"></i>
+              </div>
+            </div>
+
+            <a href="#" class="forgot-password">Forgot Password?</a>
+
+            <button id="teacher-login-btn" class="login-btn">Login as Teacher</button>
+
+            <div class="biometric-row">
+              <button id="teacher-register-bio" class="bio-btn" type="button">Register Biometric</button>
+              <button id="teacher-use-bio" class="bio-btn" type="button">Use Biometric Login</button>
+            </div>
+
+            
+          </form>
+
+          <div class="signup-section">
+            <p>Don't have a teacher account?</p>
+            <a href="#" class="signup-btn">Contact Admin</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="welcome-section">
+      <div class="welcome-content">
+        <h2>Welcome to</h2>
+        <h1 id="welcome-title">student portal</h1>
+        <p id="welcome-desc">login to access your account</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===========================
+    // UI Tabs + password toggle
+    // ===========================
+    document.addEventListener("DOMContentLoaded", function () {
+      const studentTab = document.getElementById("student-tab");
+      const teacherTab = document.getElementById("teacher-tab");
+      const studentLoginForm = document.getElementById("student-login-form");
+      const teacherLoginForm = document.getElementById("teacher-login-form");
+
+      function setupPasswordToggle(passwordInputId, toggleIcon) {
+        const passwordInput = document.getElementById(passwordInputId);
+        if (passwordInput && toggleIcon) {
+          toggleIcon.addEventListener("click", function () {
+            const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+            passwordInput.setAttribute("type", type);
+            this.classList.toggle("fa-eye");
+            this.classList.toggle("fa-eye-slash");
+          });
+        }
+      }
+
+      document.querySelectorAll(".toggle-password").forEach((toggleIcon) => {
+        const targetId = toggleIcon.getAttribute("data-target");
+        setupPasswordToggle(targetId, toggleIcon);
+      });
+
+      studentTab.addEventListener("click", () => {
+        studentTab.classList.add("active");
+        teacherTab.classList.remove("active");
+
+        teacherLoginForm.classList.add("hidden");
+        studentLoginForm.classList.remove("hidden");
+
+        document.getElementById("welcome-title").textContent = "student portal";
+        document.getElementById("welcome-desc").textContent = "login to access your account";
+      });
+
+      teacherTab.addEventListener("click", () => {
+        teacherTab.classList.add("active");
+        studentTab.classList.remove("active");
+
+        studentLoginForm.classList.add("hidden");
+        teacherLoginForm.classList.remove("hidden");
+        teacherLoginForm.classList.add("teacher-active");
+
+        document.getElementById("welcome-title").textContent = "teacher portal";
+        document.getElementById("welcome-desc").textContent = "login to access your courses & tools";
+      });
+    });
+
+    // =========================================
+    // WebAuthn helper functions (client-demo)
+    // Production: server must supply challenge & verify assertion
+    // =========================================
+    function bufferToBase64URLString(buffer) {
+      const bytes = new Uint8Array(buffer);
+      let str = "";
+      for (const charCode of bytes) {
+        str += String.fromCharCode(charCode);
+      }
+      return btoa(str).replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
+    }
+
+    function base64URLStringToBuffer(base64URLString) {
+      // convert base64url to base64
+      const padding = "=".repeat((4 - (base64URLString.length % 4)) % 4);
+      const base64 = (base64URLString + padding).replace(/-/g, "+").replace(/_/g, "/");
+      const str = atob(base64);
+      const bytes = new Uint8Array(str.length);
+      for (let i = 0; i < str.length; i++) {
+        bytes[i] = str.charCodeAt(i);
+      }
+      return bytes.buffer;
+    }
+
+    function generateRandomBuffer(len = 32) {
+      const arr = new Uint8Array(len);
+      window.crypto.getRandomValues(arr);
+      return arr.buffer;
+    }
+
+    function supportsWebAuthn() {
+      return !!(window.PublicKeyCredential && typeof window.PublicKeyCredential === "function");
+    }
+
+    // Save credential info in localStorage for demo (INSECURE for prod)
+    function saveCredentialForDemo(role, credIdBase64) {
+      const key = "webauthn-demo-" + role;
+      localStorage.setItem(key, credIdBase64);
+    }
+
+    function getSavedCredentialForDemo(role) {
+      return localStorage.getItem("webauthn-demo-" + role);
+    }
+
+    // =========================
+    // Registration (create)
+    // =========================
+    async function registerBiometric(role) {
+      if (!supportsWebAuthn()) {
+        alert("आपका ब्राउज़र या डिवाइस WebAuthn सपोर्ट नहीं करता।");
+        return;
+      }
+
+      const username = (role === "student") ? document.getElementById("student-username").value : document.getElementById("teacher-username").value;
+      if (!username) {
+        alert("पहले username/ID डालें।");
+        return;
+      }
+
+      try {
+        // In production: get challenge and user info from server.
+        const challenge = generateRandomBuffer(32); // demo-only
+        const userId = new Uint8Array([...Array(16)].map(()=>Math.floor(Math.random()*256)));
+
+        const publicKey = {
+          challenge: challenge,
+          rp: { name: "Your Portal" },
+          user: {
+            id: userId,
+            name: username,
+            displayName: username
+          },
+          pubKeyCredParams: [{ type: "public-key", alg: -7 }, { type: "public-key", alg: -257 }],
+          authenticatorSelection: {
+            authenticatorAttachment: "platform", // prefer platform (device) authenticator - fingerprint/face
+            userVerification: "preferred"
+          },
+          timeout: 60000,
+          attestation: "none"
+        };
+
+        const credential = await navigator.credentials.create({ publicKey });
+
+        if (!credential) {
+          alert("Credential creation failed or cancelled.");
+          return;
+        }
+
+        const rawId = credential.rawId;
+        const idBase64 = bufferToBase64URLString(rawId);
+
+        // Save demo cred id
+        saveCredentialForDemo(role, idBase64);
+
+        alert("Biometric registered (demo). अब Use Biometric Login आजमा सकते हैं।");
+      } catch (err) {
+        console.error("Register error:", err);
+        alert("Registration failed: " + (err.message || err));
+      }
+    }
+
+    // =========================
+    // Authentication (get)
+    // =========================
+    async function useBiometricLogin(role) {
+      if (!supportsWebAuthn()) {
+        alert("WebAuthn supported नहीं है।");
+        return;
+      }
+
+      const savedId = getSavedCredentialForDemo(role);
+      if (!savedId) {
+        alert("पहले Register Biometric करके credential store करें।");
+        return;
+      }
+
+      try {
+        // In production: server provides a challenge and allowedCredentials
+        const challenge = generateRandomBuffer(32); // demo-only
+
+        const allowCred = [{
+          id: base64URLStringToBuffer(savedId),
+          type: "public-key",
+          transports: ["internal"] // platform authenticator
+        }];
+
+        const publicKey = {
+          challenge: challenge,
+          timeout: 60000,
+          rpId: window.location.hostname,
+          allowCredentials: allowCred,
+          userVerification: "preferred"
+        };
+
+        const assertion = await navigator.credentials.get({ publicKey });
+
+        if (!assertion) {
+          alert("Authentication cancelled या failed.");
+          return;
+        }
+
+        // In production: send assertion.response to server to verify signature.
+        // Demo: accept and "log in"
+        alert("Biometric authentication सफल (demo). आप लॉग इन हो गए।");
+
+        // Example: you can now redirect or set session in your app.
+      } catch (err) {
+        console.error("Auth error:", err);
+        alert("Authentication failed: " + (err.message || err));
+      }
+    }
+
+    // =========================
+    // Wire buttons
+    // =========================
+    document.getElementById("student-register-bio").addEventListener("click", () => registerBiometric("student"));
+    document.getElementById("student-use-bio").addEventListener("click", () => useBiometricLogin("student"));
+
+    document.getElementById("teacher-register-bio").addEventListener("click", () => registerBiometric("teacher"));
+    document.getElementById("teacher-use-bio").addEventListener("click", () => useBiometricLogin("teacher"));
+
+    // Optional: Hook normal login button to fallback if no biometric
+    document.getElementById("student-login-btn").addEventListener("click", () => {
+      // demo: normal login flow (implement server-side check)
+      alert("Student normal login (demo). Real auth must call server.");
+    });
+    document.getElementById("teacher-login-btn").addEventListener("click", () => {
+      alert("Teacher normal login (demo). Real auth must call server.");
+    });
+
+    // Helpful: show/hide note if WebAuthn supported
+    const studentNote = document.getElementById("student-bio-note");
+    const teacherNote = document.getElementById("teacher-bio-note");
+    if (!supportsWebAuthn()) {
+      if (studentNote) studentNote.textContent = "WebAuthn उपलब्ध नहीं। Biometric काम नहीं करेगा।";
+      if (teacherNote) teacherNote.textContent = "WebAuthn उपलब्ध नहीं। Biometric काम नहीं करेगा।";
+    }
+  </script>
+</body>
+</html>
