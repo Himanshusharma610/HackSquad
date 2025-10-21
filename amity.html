@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Login | Amity University</title>
+
+  <style>
+    /* ===== Page Background ===== */
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: url("https://www.amity.edu/gwalior/images/university.jpg") no-repeat center center/cover;
+      backdrop-filter: blur(4px);
+    }
+
+    /* ===== Transparent Glass Card ===== */
+    .login-container {
+      width: 400px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(12px);
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    /* ===== Tabs ===== */
+    .tabs {
+      display: flex;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 25px;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: 500;
+      color: rgb(0, 0, 0);
+    }
+
+    .tab.active {
+      background: rgba(255, 255, 255, 0.4);
+      color: #000;
+      font-weight: 600;
+    }
+
+    /* ===== Headings ===== */
+    h2 {
+      margin: 0 0 5px 0;
+      font-size: 26px;
+      color: rgb(0, 0, 0);
+    }
+
+    p {
+      font-size: 14px;
+      color: #000000;
+      margin-bottom: 25px;
+    }
+
+    /* ===== Inputs ===== */
+    label {
+      font-size: 14px;
+      display: block;
+      margin-bottom: 6px;
+      color: #000000;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      outline: none;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.2);
+      color: rgb(0, 0, 0);
+      font-size: 14px;
+      margin-bottom: 18px;
+    }
+
+    input::placeholder {
+      color: #000000;
+    }
+
+    .forgot {
+      text-align: right;
+      font-size: 13px;
+      margin-top: -10px;
+      margin-bottom: 20px;
+    }
+
+    .forgot a {
+      color: #000000;
+      text-decoration: underline;
+    }
+
+    /* ===== Buttons ===== */
+    .btn-primary {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.4);
+      color: #000;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .btn-primary:hover {
+      background: rgba(0, 0, 0, 0.7);
+    }
+
+    .biometric-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+    }
+
+    .biometric-buttons button {
+      flex: 1;
+      margin: 0 5px;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      background: transparent;
+      color: rgb(0, 0, 0);
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .biometric-buttons button:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid rgba(255, 255, 255, 0.3);
+      margin: 20px 0;
+    }
+
+    .signup {
+      text-align: center;
+      font-size: 14px;
+      color: rgb(0, 0, 0);
+    }
+
+    .signup a {
+      color: rgb(0, 0, 0);
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="login-container">
+    <div class="tabs">
+      <div class="tab active" id="student-tab">Student</div>
+      <div class="tab" id="teacher-tab">Teacher</div>
+    </div>
+
+    <h2>Student Login</h2>
+    <p>Enter your student account details</p>
+
+    <label for="studentId">Student ID</label>
+    <input type="text" id="studentId" placeholder="Enter Student ID" />
+
+    <label for="password">Password</label>
+    <input type="password" id="password" placeholder="Enter Password" />
+
+    <div class="forgot"><a href="#">Forgot Password?</a></div>
+
+    <button class="btn-primary">Login as Student</button>
+
+    <div class="biometric-buttons">
+      <button>Register Biometric</button>
+      <button>Use Biometric Login</button>
+    </div>
+
+    <hr />
+
+    <div class="signup">
+      Don’t have a student account? <a href="#">Sign up</a>
+    </div>
+  </div>
+
+  <script>
+    const studentTab = document.getElementById("student-tab");
+    const teacherTab = document.getElementById("teacher-tab");
+    const heading = document.querySelector("h2");
+    const paragraph = document.querySelector("p");
+    const loginBtn = document.querySelector(".btn-primary");
+
+    studentTab.addEventListener("click", () => {
+      studentTab.classList.add("active");
+      teacherTab.classList.remove("active");
+      heading.textContent = "Student Login";
+      paragraph.textContent = "Enter your student account details";
+      loginBtn.textContent = "Login as Student";
+    });
+
+    teacherTab.addEventListener("click", () => {
+      teacherTab.classList.add("active");
+      studentTab.classList.remove("active");
+      heading.textContent = "Teacher Login";
+      paragraph.textContent = "Enter your teacher account details";
+      loginBtn.textContent = "Login as Teacher";
+    });
+  </script>
+</body>
+</html>
